@@ -46,7 +46,7 @@ def detect_objects(image_id, image_path, suspect_path, results_arr = []):
     
 # test and suspect images directory paths 
 test_dir = r'/content/OP_ReID_GPTEAM/Datasets/Raw/test'
-sus_dir = r'/content/OP_ReID_GPTEAM/Datasets/Raw/suspects'
+sus_dir = r'/content/OP_ReID_GPTEAM/Datasets/Raw/suspects/content/drive/Shareddrives/ZINDI Data Science/ADPL/Competition Data/CV/Data Prep/Test (0-1599)/merged/crops'
 results = []
 count = 0
 

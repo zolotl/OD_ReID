@@ -31,7 +31,7 @@ to_device(model, device)
 
 t = Transforms()
 
-target = r"/content/OP_ReID_GPTEAM/Datasets/Raw/suspects/image_0523.png"
+target = r"/content/OP_ReID_GPTEAM/Datasets/Raw/suspects/content/drive/Shareddrives/ZINDI Data Science/ADPL/Competition Data/CV/Data Prep/Test (0-1599)/merged/crops/image_0523.png"
 img = r"/content/OP_ReID_GPTEAM/Datasets/Raw/test/image_0523.png"
 
 target = cv2.imread(target)
