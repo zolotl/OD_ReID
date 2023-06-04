@@ -14,7 +14,7 @@ def crop_image(img_dir, labels_dir, cropped_img_dir, img_map, img_map_json):
             with open(labels_path, 'r') as f:
                 lines = [line.strip() for line in f.readlines()]
                 for line in lines:
-                    if len(line) == 5:
+                    if line is not '':
                         p_id, x_center, y_center, width, height = [float(x) for x in line.split()]
                         im = Image.open(img_path)
                         im = im.resize((600, 600))
