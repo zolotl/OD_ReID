@@ -24,20 +24,25 @@ def detect_objects(image_id, image_path, suspect_path, results_arr = []):
     # Perform object detection
     results = yolo_model(img)
     results = results.xyxy[0].tolist()
+
+    # Restrict the number of predictions to 4 per image
     if len(results) > 4:
       results = results[:4]
-
-    # Print the detected objects with their classes, confidence scores, and bounding box coordinates
-    for result in results:
-        confidence = result[4]
-        x1, y1, x2, y2 = [int(x) for x in result[:4]]
-        plushie = img[y1:y2, x1:x2]
-        suspect = cv2.imread(suspect_path)
-        match_confidence = float(predict_image(reid_model, suspect, plushie, transform=reid_transforms))
-        plushie_class = 1 if match_confidence > 0 else 0
-        results_arr.append([image_id, plushie_class, confidence, y1/img.shape[0], x1/img.shape[1], y2/img.shape[0], x2/img.shape[1]])
-    if results is None:
+    
+    # Check is yolo prediction is null
+    if len(results) < 1:
       results_arr.append([image_id, 0, 0, 0, 0, 0, 0])
+
+    # Store detected objects with their classes, confidence scores, and bounding box coordinates in results array
+    for result in results:
+      confidence = result[4]
+      x1, y1, x2, y2 = [int(x) for x in result[:4]]
+      plushie = img[y1:y2, x1:x2]
+      suspect = cv2.imread(suspect_path)
+      match_confidence = float(predict_image(reid_model, suspect, plushie, transform=reid_transforms))
+      plushie_class = 1 if match_confidence > 0 else 0
+      results_arr.append([image_id, plushie_class, confidence, y1/img.shape[0], x1/img.shape[1], y2/img.shape[0], x2/img.shape[1]])
+
     
 # test and suspect images directory paths 
 test_dir = r'/content/OP_ReID_GPTEAM/Datasets/Raw/test'
