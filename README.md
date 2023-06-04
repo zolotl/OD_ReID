@@ -9,7 +9,7 @@
 %cd ../
 ```
 
-### Uploading datasets
+### Upload datasets
 Create required dataset directories
 ```shell
 %cd OP_ReID_GPTEAM/
