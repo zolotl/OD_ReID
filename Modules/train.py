@@ -70,10 +70,10 @@ def evaluate(model, loss_func, val_dl, metric=None):
         return avg_loss, total, avg_metric
 
 def main():
-    train_filepath = r"../Datasets/Processed/train_ann_50.txt"
-    train_img_dir = r"../Datasets/Raw/train"
-    val_filepath = r"../Datasets/Processed/val_ann_50.txt"
-    val_img_dir = r"../Datasets/Raw/val"
+    train_filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_ann_50.txt"
+    train_img_dir = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_images"
+    val_filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/val_ann_50.txt"
+    val_img_dir = r"/content/OP_ReID_GPTEAM/Datasets/Processed/val_images"
     train_bs = 64
     test_bs = 16
     num_epochs = 8
@@ -106,7 +106,7 @@ def main():
     train_losses, val_losses, val_metrics = fit(num_epochs, network, criterion, 
                                             train_dl, val_dl, optimizer, lr, accuracy)
 
-    torch.save(network.state_dict(), '../Output/Models/model_2.pth')
+    torch.save(network.state_dict(), '/content/OP_ReID_GPTEAM/Output/Models/model_2.pth')
 
     
 
