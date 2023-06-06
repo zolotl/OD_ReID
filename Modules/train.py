@@ -77,8 +77,7 @@ def main():
     train_bs = 64
     test_bs = 16
     num_epochs = 8
-    lr = 0.0005
-    val_ratio = 0.2
+    lr = 5e4
     
     torch.autograd.set_detect_anomaly(True)
     

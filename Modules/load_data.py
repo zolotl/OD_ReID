@@ -3,6 +3,14 @@ import random
 import numpy as np
 from PIL import Image
 import json
+import cv2
+
+def process_image(img_file, shift_size=20):
+    img = cv2.imread(img_file, cv2.COLOR_BayerBG2RGB)
+    img = cv2.rotate(img, 0)
+    shift = np.random.randint(shift_size, size=(1, 1, 3))
+    img = img + shift
+    img = np.mod(img, 256)
 
 def crop_image(img_dir, labels_dir, cropped_img_dir, img_map, img_map_json):
     count = 0
@@ -40,14 +48,14 @@ def create_data(ann_file, img_map):
             anchor_nums = img_map[anchor_class]
             if anchor_nums > 1:
                 # Make anchor positive pair   
-                for i in range(50): 
+                for _ in range(50): 
                     anchor_num = random.randint(1, anchor_nums)     
                     positive_num = random.randint(1, anchor_nums)
                     while positive_num == anchor_num:
                         positive_num = random.randint(1, anchor_nums)
                     f.write(f'{anchor_class} {anchor_num} {positive_num}' + '\n')
             # Make anchor negative pair
-            for i in range(50):
+            for _ in range(50):
                 anchor_num = random.randint(1, anchor_nums)
                 neg_class = random.choice(list(img_map.keys()))
                 while neg_class == anchor_class:
