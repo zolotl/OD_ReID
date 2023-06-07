@@ -65,7 +65,8 @@ def create_norm_dataset(filepath, img_dir):
     d = PlushieNormDataset(img_dir=img_dir, transform=t)
     loader = DataLoader(d, batch_size=len(d), num_workers=1)
     data = next(iter(loader))
-    mean, std = data[0].mean(), data[0].std()
+    mean = [data[:, 0].mean(), data[:, 1].mean(), data[:, 2].mean()]
+    std = [data[:, 0].std(), data[:, 1].std(), data[:, 2].std()]
     
     t_norm = Transforms(mean=mean, std=std)
     d_norm = PlushieTrainDataset(filepath=filepath, img_dir=img_dir, transform=t_norm)

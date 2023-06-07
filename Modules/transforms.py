@@ -27,12 +27,12 @@ class Transforms:
         self.transform = tt.Compose([BGR2RGB(), 
                         SquarePad(),
                         Resize((128, 128)),
+                        tt.ToTensor(),
                         tt.RandomCrop((100, 100)),
                         tt.ColorJitter(brightness=0.1),
                         tt.RandomGrayscale(0.2),
                         tt.RandomVerticalFlip(0.5),
                         tt.RandomHorizontalFlip(0.5),
-                        tt.ToTensor(),
                         tt.Normalize(mean=mean, std=std)])
 
     def __call__(self, image):
@@ -44,12 +44,13 @@ class NormTransforms:
         self.transform = tt.Compose([BGR2RGB(), 
                         SquarePad(),
                         Resize((128, 128)),
+                        tt.ToTensor(),
                         tt.RandomCrop((100, 100)),
                         tt.ColorJitter(brightness=0.1),
                         tt.RandomGrayscale(0.2),
                         tt.RandomVerticalFlip(0.5),
                         tt.RandomHorizontalFlip(0.5),
-                        tt.ToTensor()])
+                        ])
         
     def __call__(self, image):
         return self.transform(image)
