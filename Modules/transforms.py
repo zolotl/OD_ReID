@@ -40,7 +40,7 @@ class Transforms:
 
 # To find the mean and std
 class NormTransforms:
-    def __init_(self):
+    def __init__(self):
         self.transform = tt.Compose([BGR2RGB(), 
                         SquarePad(),
                         Resize((128, 128)),
