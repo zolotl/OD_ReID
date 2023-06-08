@@ -29,7 +29,8 @@ class Transforms:
                         Resize((128, 128)),
                         tt.ToTensor(),
                         tt.RandomCrop((100, 100)),
-                        tt.Normalize(mean=mean, std=std)])
+                        tt.ColorJitter(0.2),
+                        tt.Normalize(mean=0, std=1)])
 
     def __call__(self, image):
         return self.transform(image)
@@ -41,6 +42,7 @@ class NormTransforms:
                         SquarePad(),
                         Resize((128, 128)),
                         tt.ToTensor(),
+                        tt.ColorJitter(0.2),
                         tt.RandomCrop((100, 100)),
                         ])
         
