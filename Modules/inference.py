@@ -10,10 +10,10 @@ import os
 from test import predict_image
 from transforms import Transforms
 
-yolo_model = torch.hub.load('/content/OP_ReID_GPTEAM/yolov5', 'custom', path='/content/OP_ReID_GPTEAM/Modules/best_new.pt', source='local')
+yolo_model = torch.hub.load('../yolov5', 'custom', path='./best_new.pt', source='local')
 yolo_model.iou = 0.01
 yolo_model.conf = 0.4
-reid_model = "/content/OP_ReID_GPTEAM/Output/Models/model_2.pth"
+reid_model = "./model_2.pth"
 
 reid_transforms = Transforms()
 
@@ -45,8 +45,8 @@ def detect_objects(image_id, image_path, suspect_path, results_arr = []):
 
     
 # test and suspect images directory paths 
-test_dir = r'/content/OP_ReID_GPTEAM/Datasets/Raw/test'
-sus_dir = r'/content/OP_ReID_GPTEAM/Datasets/Raw/suspects/content/drive/Shareddrives/ZINDI Data Science/ADPL/Competition Data/CV/Data Prep/Test (0-1599)/merged/crops'
+test_dir = r'../Datasets/Raw/test'
+sus_dir = r'../Datasets/Raw/suspects/content/drive/Shareddrives/ZINDI Data Science/ADPL/Competition Data/CV/Data Prep/Test (0-1599)/merged/crops'
 results = []
 count = 0
 
@@ -65,10 +65,10 @@ for path in os.listdir(test_dir):
       headers = ['Image_ID', 'class', 'confidence', 'ymin', 'xmin', 'ymax', 'xmax']
       print(len(results))
       results_df = pd.DataFrame(results, columns=headers)
-      results_df.to_csv('/content/OP_ReID_GPTEAM/Output/Results/results_2.csv', index=False)
+      results_df.to_csv('../Output/Results/results_2.csv', index=False)
       print(percentage)
 
 
 headers = ['Image_ID', 'class', 'confidence', 'ymin', 'xmin', 'ymax', 'xmax']
 results_df = pd.DataFrame(results, columns=headers)
-results_df.to_csv('/content/OP_ReID_GPTEAM/Output/Results/results_2.csv', index=False)
+results_df.to_csv('../Output/Results/results_2.csv', index=False)
