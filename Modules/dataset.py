@@ -4,8 +4,25 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import cv2
 
-from torch.utils.data import Dataset
-from transforms import Transforms
+from torch.utils.data import Dataset, DataLoader
+from transforms import Transforms, NormTransforms
+
+class PlushieNormDataset(Dataset):
+
+    def __init__(self, img_dir, transform=None):
+        self.img_dir = img_dir
+        self.transform = transform
+        self.samples = [entry for entry in os.listdir(img_dir) if os.path.isfile(os.path.join(img_dir, entry))]
+    
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, i):
+        img = cv2.imread(os.path.join(self.img_dir, self.samples[i]))
+        img = self.transform(img)
+        return img
+    
+
 
 class PlushieTrainDataset(Dataset):
     
@@ -13,6 +30,7 @@ class PlushieTrainDataset(Dataset):
         self.samples = []
         self.img_dir = img_dir
         self.transform = transform
+        
 
         with open(filepath, 'r') as f:
             self.samples = [line.strip() for line in f]
@@ -42,15 +60,24 @@ class PlushieTrainDataset(Dataset):
 
         return anchor, img, is_same
 
-
+def create_norm_dataset(filepath, img_dir):
+    t = NormTransforms()
+    d = PlushieNormDataset(img_dir=img_dir, transform=t)
+    loader = DataLoader(d, batch_size=len(d), num_workers=1)
+    data = next(iter(loader))
+    mean, std = data[0].mean(), data[0].std()
+    
+    t_norm = Transforms(mean=mean, std=std)
+    d_norm = PlushieTrainDataset(filepath=filepath, img_dir=img_dir, transform=t_norm)
+    return d_norm
 
 def main():
-    t = Transforms()
     filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_ann_50.txt"
     img_dir = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_images"
-    d = PlushieTrainDataset(filepath=filepath, img_dir=img_dir, transform=t)
+
+    d_norm = create_norm_dataset(filepath=filepath, img_dir=img_dir)
     
-    e = d[0]
+    e = d_norm[0]
     axs = plt.figure(figsize=(9, 9)).subplots(1, 2)
     plt.title(e[2])
     axs[0].imshow(e[0].permute(1,2,0))

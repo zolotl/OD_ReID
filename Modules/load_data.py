@@ -3,14 +3,6 @@ import random
 import numpy as np
 from PIL import Image
 import json
-import cv2
-
-def process_image(img_file, shift_size=20):
-    img = cv2.imread(img_file, cv2.COLOR_BayerBG2RGB)
-    img = cv2.rotate(img, 0)
-    shift = np.random.randint(shift_size, size=(1, 1, 3))
-    img = img + shift
-    img = np.mod(img, 256)
 
 def crop_image(img_dir, labels_dir, cropped_img_dir, img_map, img_map_json):
     count = 0
@@ -25,7 +17,7 @@ def crop_image(img_dir, labels_dir, cropped_img_dir, img_map, img_map_json):
                     if line is not '':
                         p_id, x_center, y_center, width, height = [float(x) for x in line.split()]
                         im = Image.open(img_path)
-                        im = im.resize((600, 600))
+                        im = im.resize((800, 800))
                         if p_id in img_map.keys():
                             img_map[p_id] += 1
                         else:
