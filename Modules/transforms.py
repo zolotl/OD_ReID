@@ -29,10 +29,6 @@ class Transforms:
                         Resize((128, 128)),
                         tt.ToTensor(),
                         tt.RandomCrop((100, 100)),
-                        tt.ColorJitter(brightness=0.1),
-                        tt.RandomGrayscale(0.2),
-                        tt.RandomVerticalFlip(0.5),
-                        tt.RandomHorizontalFlip(0.5),
                         tt.Normalize(mean=mean, std=std)])
 
     def __call__(self, image):
@@ -46,10 +42,6 @@ class NormTransforms:
                         Resize((128, 128)),
                         tt.ToTensor(),
                         tt.RandomCrop((100, 100)),
-                        tt.ColorJitter(brightness=0.1),
-                        tt.RandomGrayscale(0.2),
-                        tt.RandomVerticalFlip(0.5),
-                        tt.RandomHorizontalFlip(0.5),
                         ])
         
     def __call__(self, image):
