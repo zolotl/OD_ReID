@@ -27,7 +27,11 @@ class SiameseNetwork(nn.Module):
         self.fc = nn.Sequential(
             nn.Linear(self.fc_in_features * 2, 256),
             nn.ReLU(inplace=True),
-            nn.Linear(256, 1),
+            nn.Dropout(0.5),
+            nn.Linear(256, 64),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.5),
+            nn.ReLU(64, 1)
         )
 
 
