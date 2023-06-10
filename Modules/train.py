@@ -31,7 +31,8 @@ def fit(epochs, model, loss_func, train_dl, val_dl, opt_func=torch.optim.SGD, lr
     train_losses, val_losses, val_metrics = [] , [], []
     
     opt = opt_func(model.parameters(), lr=lr)
-    
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, mode=min, factor=0.1, patience=2, threshold=5e-3, verbose=True)
+
     for epoch in range(1, epochs+1):
         model.train() # Setting for pytorch - training mode
         for anchor,image,label in tqdm(train_dl):

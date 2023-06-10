@@ -31,7 +31,7 @@ class SiameseNetwork(nn.Module):
             nn.Linear(256, 64),
             nn.ReLU(inplace=True),
             nn.Dropout(0.5),
-            nn.ReLU(64, 1)
+            nn.Linear(64, 1)
         )
 
 
