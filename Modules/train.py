@@ -1,6 +1,7 @@
 import numpy as np
 
 import torch
+import sys
 
 from tqdm import tqdm
 
@@ -27,13 +28,13 @@ def loss_batch(model, loss_func, anchor, image, label, opt=None, metric=None): #
     return loss.item(), len(anchor), metric_result
 
 
-def fit(epochs, model, loss_func, train_dl, val_dl, opt_func=torch.optim.SGD, lr=0.01, metric=None):
+def fit(num_epochs, model, loss_func, train_dl, val_dl, opt_func=torch.optim.SGD, lr=0.01, metric=None, current_epoch=1):
     train_losses, val_losses, val_metrics = [] , [], []
     
     opt = opt_func(model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, mode="min", factor=0.1, patience=2, threshold=5e-3, verbose=True)
     
-    for epoch in range(1, epochs+1):
+    for epoch in range(current_epoch, num_epochs+1):
         model.train() # Setting for pytorch - training mode
         for anchor,image,label in tqdm(train_dl):
             train_loss, _, _ = loss_batch(model, loss_func, anchor, image, label, opt) # update weights
@@ -52,6 +53,16 @@ def fit(epochs, model, loss_func, train_dl, val_dl, opt_func=torch.optim.SGD, lr
         else:
             print("Epoch [{}], train_loss: {:.4f}, val_loss: {:.4f}, val_{}: {:.4f}".format(
             epoch, train_loss, val_loss, metric.__name__, val_metric))
+
+        # Save model checkpoints
+        torch.save({
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': opt.state_dict(),
+            'train_loss': train_loss,
+            'val_loss': val_loss,
+            metric.__name__: val_metric
+            }, '/content/OP_ReID_GPTEAM/Output/Models/model3_{}_{}'.format(epoch, val_metric))
             
     return train_losses, val_losses, val_metrics
 
@@ -72,6 +83,13 @@ def evaluate(model, loss_func, val_dl, metric=None):
         return avg_loss, total, avg_metric
 
 def main():
+
+    continue_training = False
+
+    if len(sys.argv) == 2:
+        train_checkpoint = sys.argv[1]
+        continue_training = True
+
     train_filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_ann_100.txt"
     train_img_dir = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_images"
     val_filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/val_ann_100.txt"
@@ -103,17 +121,17 @@ def main():
   
     criterion = torch.nn.BCEWithLogitsLoss()
     optimizer = torch.optim.Adam
-    
 
-
-    train_losses, val_losses, val_metrics = fit(num_epochs, network, criterion, 
+    if continue_training:
+        checkpoint = torch.load(train_checkpoint)
+        network.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        current_epoch = checkpoint['epoch']
+        train_losses, val_losses, val_metrics = fit(num_epochs, network, criterion, 
+                                            train_dl, val_dl, optimizer, lr, accuracy, current_epoch=current_epoch)
+    else:
+        train_losses, val_losses, val_metrics = fit(num_epochs, network, criterion, 
                                             train_dl, val_dl, optimizer, lr, accuracy)
-
-    torch.save(network.state_dict(), '/content/OP_ReID_GPTEAM/Output/Models/model_2.pth')
-
-    
-
-
 
 
 if __name__ == "__main__":
