@@ -21,36 +21,27 @@ class Resize():
     def __call__(self, image):
         return cv2.resize(image, self.output_size, interpolation = cv2.INTER_LINEAR)
 
-# To create the actual train dataset
+
 class Transforms:
-    def __init__(self, mean=[0, 0, 0], std=[1, 1, 1]):
+    def __init__(self):
         self.transform = tt.Compose([BGR2RGB(), 
                         SquarePad(),
                         Resize((128, 128)),
-                        tt.RandomCrop((100, 100)),
-                        tt.ColorJitter(brightness=0.1),
+                        tt.ColorJitter(brightness=0.2, hue=0.05),
                         tt.RandomGrayscale(0.2),
-                        tt.RandomVerticalFlip(0.5),
-                        tt.RandomHorizontalFlip(0.5),
                         tt.ToTensor(),
-                        tt.Normalize(mean=mean, std=std)])
+                        tt.Normalize(0, 1)])
 
     def __call__(self, image):
         return self.transform(image)
 
-# To find the mean and std
-class NormTransforms:
-    def __init_(self):
+class Transforms_val:
+    def __init__(self):
         self.transform = tt.Compose([BGR2RGB(), 
                         SquarePad(),
                         Resize((128, 128)),
-                        tt.RandomCrop((100, 100)),
-                        tt.ColorJitter(brightness=0.1),
-                        tt.RandomGrayscale(0.2),
-                        tt.RandomVerticalFlip(0.5),
-                        tt.RandomHorizontalFlip(0.5),
-                        tt.ToTensor()])
-        
+                        tt.ToTensor(),
+                        tt.Normalize(0, 1)])
+
     def __call__(self, image):
         return self.transform(image)
-    

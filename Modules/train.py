@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 from dataset import PlushieTrainDataset
 from model import SiameseNetwork
-from transforms import Transforms
+from transforms import Transforms, Transforms_val
 from my_utils import DeviceDataLoader, accuracy, get_default_device, to_device
 
 
@@ -31,6 +31,7 @@ def fit(epochs, model, loss_func, train_dl, val_dl, opt_func=torch.optim.SGD, lr
     train_losses, val_losses, val_metrics = [] , [], []
     
     opt = opt_func(model.parameters(), lr=lr)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, mode="min", factor=0.1, patience=2, threshold=5e-3, verbose=True)
     
     for epoch in range(1, epochs+1):
         model.train() # Setting for pytorch - training mode
@@ -39,6 +40,7 @@ def fit(epochs, model, loss_func, train_dl, val_dl, opt_func=torch.optim.SGD, lr
             
         model.eval() # Setting - eval mode
         val_loss, total, val_metric = evaluate(model, loss_func, val_dl, metric)
+        scheduler.step(val_loss)
         
         train_losses.append(train_loss)
         val_losses.append(val_loss)
@@ -70,20 +72,21 @@ def evaluate(model, loss_func, val_dl, metric=None):
         return avg_loss, total, avg_metric
 
 def main():
-    train_filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_ann_50.txt"
+    train_filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_ann_100.txt"
     train_img_dir = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_images"
-    val_filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/val_ann_50.txt"
+    val_filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/val_ann_100.txt"
     val_img_dir = r"/content/OP_ReID_GPTEAM/Datasets/Processed/val_images"
     train_bs = 64
     test_bs = 16
-    num_epochs = 8
+    num_epochs = 20
     lr = 5e4
     
     torch.autograd.set_detect_anomaly(True)
     
     transform = Transforms()
+    transform_val = Transforms_val()
     train_dataset = PlushieTrainDataset(filepath=train_filepath, img_dir=train_img_dir, transform=transform)
-    valid_dataset = PlushieTrainDataset(filepath=val_filepath, img_dir=val_img_dir, transform=transform)
+    valid_dataset = PlushieTrainDataset(filepath=val_filepath, img_dir=val_img_dir, transform=transform_val)
     network = SiameseNetwork()
     
 
@@ -100,6 +103,7 @@ def main():
   
     criterion = torch.nn.BCEWithLogitsLoss()
     optimizer = torch.optim.Adam
+    
 
 
     train_losses, val_losses, val_metrics = fit(num_epochs, network, criterion, 
