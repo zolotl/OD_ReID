@@ -69,7 +69,7 @@ def fit(num_epochs, model, loss_func, train_dl, val_dl, opt_func=torch.optim.SGD
             'train_loss': train_loss,
             'val_loss': val_loss,
             metric.__name__: val_metric
-            }, '/content/OP_ReID_GPTEAM/Output/Models/model3_{}_{}'.format(epoch, val_metric))
+            }, '/content/drive/MyDrive/results_cv/model3_{}_{}'.format(epoch, val_metric))
             
     return train_losses, val_losses, val_metrics
 
