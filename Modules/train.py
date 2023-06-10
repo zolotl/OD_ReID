@@ -40,6 +40,7 @@ def fit(epochs, model, loss_func, train_dl, val_dl, opt_func=torch.optim.SGD, lr
             
         model.eval() # Setting - eval mode
         val_loss, total, val_metric = evaluate(model, loss_func, val_dl, metric)
+        scheduler.step(val_loss)
         
         train_losses.append(train_loss)
         val_losses.append(val_loss)
