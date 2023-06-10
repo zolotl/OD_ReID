@@ -5,23 +5,7 @@ from PIL import Image
 import cv2
 
 from torch.utils.data import Dataset, DataLoader
-from transforms import Transforms, NormTransforms
-
-class PlushieNormDataset(Dataset):
-
-    def __init__(self, img_dir, transform=None):
-        self.img_dir = img_dir
-        self.transform = transform
-        self.samples = [entry for entry in os.listdir(img_dir) if os.path.isfile(os.path.join(img_dir, entry))]
-    
-    def __len__(self):
-        return len(self.samples)
-
-    def __getitem__(self, i):
-        img = cv2.imread(os.path.join(self.img_dir, self.samples[i]))
-        img = self.transform(img)
-        return img
-    
+from transforms import Transforms
 
 
 class PlushieTrainDataset(Dataset):
@@ -59,24 +43,14 @@ class PlushieTrainDataset(Dataset):
             img = self.transform(img)
 
         return anchor, img, is_same
-
-def create_norm_dataset(filepath, img_dir):
-    t = NormTransforms()
-    d = PlushieNormDataset(img_dir=img_dir, transform=t)
-    loader = DataLoader(d, batch_size=len(d), num_workers=1)
-    data = next(iter(loader))
-    mean = [data[:, 0].mean(), data[:, 1].mean(), data[:, 2].mean()]
-    std = [data[:, 0].std(), data[:, 1].std(), data[:, 2].std()]
     
-    t_norm = Transforms(mean=mean, std=std)
-    d_norm = PlushieTrainDataset(filepath=filepath, img_dir=img_dir, transform=t_norm)
-    return d_norm
-
 def main():
     filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_ann_50.txt"
     img_dir = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_images"
 
-    d_norm = create_norm_dataset(filepath=filepath, img_dir=img_dir)
+    t = Transforms()
+
+    d_norm = PlushieTrainDataset(filepath=filepath, img_dir=img_dir, transform=t)
     
     e = d_norm[0]
     axs = plt.figure(figsize=(9, 9)).subplots(1, 2)
