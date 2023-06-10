@@ -46,7 +46,7 @@ class PlushieTrainDataset(Dataset):
 
 def main():
     t = Transforms()
-    filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_ann_50.txt"
+    filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_ann_100.txt"
     img_dir = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_images"
     d = PlushieTrainDataset(filepath=filepath, img_dir=img_dir, transform=t)
     

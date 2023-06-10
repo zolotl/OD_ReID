@@ -40,14 +40,14 @@ def create_data(ann_file, img_map):
             anchor_nums = img_map[anchor_class]
             if anchor_nums > 1:
                 # Make anchor positive pair   
-                for i in range(50): 
+                for i in range(100): 
                     anchor_num = random.randint(1, anchor_nums)     
                     positive_num = random.randint(1, anchor_nums)
                     while positive_num == anchor_num:
                         positive_num = random.randint(1, anchor_nums)
                     f.write(f'{anchor_class} {anchor_num} {positive_num}' + '\n')
             # Make anchor negative pair
-            for i in range(50):
+            for i in range(100):
                 anchor_num = random.randint(1, anchor_nums)
                 neg_class = random.choice(list(img_map.keys()))
                 while neg_class == anchor_class:

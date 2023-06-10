@@ -72,9 +72,9 @@ def evaluate(model, loss_func, val_dl, metric=None):
         return avg_loss, total, avg_metric
 
 def main():
-    train_filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_ann_50.txt"
+    train_filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_ann_100.txt"
     train_img_dir = r"/content/OP_ReID_GPTEAM/Datasets/Processed/train_images"
-    val_filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/val_ann_50.txt"
+    val_filepath = r"/content/OP_ReID_GPTEAM/Datasets/Processed/val_ann_100.txt"
     val_img_dir = r"/content/OP_ReID_GPTEAM/Datasets/Processed/val_images"
     train_bs = 64
     test_bs = 16
