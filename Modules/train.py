@@ -28,11 +28,18 @@ def loss_batch(model, loss_func, anchor, image, label, opt=None, metric=None): #
     return loss.item(), len(anchor), metric_result
 
 
-def fit(num_epochs, model, loss_func, train_dl, val_dl, opt_func=torch.optim.SGD, lr=0.01, metric=None, current_epoch=1):
+def fit(num_epochs, model, loss_func, train_dl, val_dl, opt_func=torch.optim.SGD, lr=0.01, metric=None, checkpoint = None):
     train_losses, val_losses, val_metrics = [] , [], []
     
     opt = opt_func(model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, mode="min", factor=0.1, patience=2, threshold=5e-3, verbose=True)
+
+    if checkpoint != None:
+        model.load_state_dict(checkpoint['model_state_dict'])
+        opt.load_state_dict(checkpoint['optimizer_state_dict'])
+        current_epoch = checkpoint['epoch']
+    else:
+        current_epoch = 1
     
     for epoch in range(current_epoch, num_epochs+1):
         model.train() # Setting for pytorch - training mode
@@ -124,11 +131,8 @@ def main():
 
     if continue_training:
         checkpoint = torch.load(train_checkpoint)
-        network.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        current_epoch = checkpoint['epoch']
         train_losses, val_losses, val_metrics = fit(num_epochs, network, criterion, 
-                                            train_dl, val_dl, optimizer, lr, accuracy, current_epoch=current_epoch)
+                                            train_dl, val_dl, optimizer, lr, accuracy, checkpoint=checkpoint)
     else:
         train_losses, val_losses, val_metrics = fit(num_epochs, network, criterion, 
                                             train_dl, val_dl, optimizer, lr, accuracy)
