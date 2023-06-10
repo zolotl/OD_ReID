@@ -29,7 +29,7 @@ class Transforms:
                         Resize((128, 128)),
                         tt.ToTensor(),
                         tt.ColorJitter(brightness=0.2, hue=0.05),
-                        tt.RandomGrayscale(0.2),
+                        tt.RandomGrayscale(0.05),
                         tt.Normalize(0, 1)])
 
     def __call__(self, image):

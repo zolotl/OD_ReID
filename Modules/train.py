@@ -32,7 +32,7 @@ def fit(num_epochs, model, loss_func, train_dl, val_dl, opt_func=torch.optim.SGD
     train_losses, val_losses, val_metrics = [] , [], []
     
     opt = opt_func(model.parameters(), lr=lr)
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, mode="min", factor=0.1, patience=2, threshold=5e-3, verbose=True)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, mode="min", factor=0.01, patience=2, threshold=5e-3, verbose=True)
 
     if checkpoint != None:
         model.load_state_dict(checkpoint['model_state_dict'])
@@ -104,7 +104,7 @@ def main():
     train_bs = 64
     test_bs = 16
     num_epochs = 20
-    lr = 5e4
+    lr = 5e-4
     
     torch.autograd.set_detect_anomaly(True)
     
